@@ -36,29 +36,35 @@
   <div class="image-container" id="imageContainer"></div>
 
   <script>
-    const input = document.getElementById('imageInput');
-    const container = document.getElementById('imageContainer');
+  const input = document.getElementById('imageInput');
+  const container = document.getElementById('imageContainer');
 
-    input.addEventListener('change', () => {
-      const files = Array.from(input.files);
+  input.addEventListener('change', () => {
+    const files = Array.from(input.files);
 
-      // ファイル名で昇順ソート
-      files.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
-
-      // 既存の画像をクリア
-      container.innerHTML = '';
-
-      files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const img = document.createElement('img');
-          img.src = e.target.result;
-          img.alt = file.name;
-          container.appendChild(img);
-        };
-        reader.readAsDataURL(file);
-      });
+    // ファイル名を数字部分でソート
+    files.sort((a, b) => {
+      const extractNumber = (name) => {
+        const match = name.match(/\d+/); // 数字部分を抽出
+        return match ? match[0].padStart(5, '0') : ''; // 5桁でゼロパディング
+      };
+      return extractNumber(a.name).localeCompare(extractNumber(b.name), 'ja');
     });
+
+    // 既存の画像をクリア
+    container.innerHTML = '';
+
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.alt = file.name;
+        container.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
   </script>
 
 </body>
