@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>縦読み画像ビューア</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 1em;
+      background-color: #f5f5f5;
+    }
+    input[type="file"] {
+      display: block;
+      margin-bottom: 1em;
+    }
+    .image-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1em;
+    }
+    .image-container img {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <input type="file" id="imageInput" accept="image/*" multiple />
+  <div class="image-container" id="imageContainer"></div>
+
+  <script>
+    const input = document.getElementById('imageInput');
+    const container = document.getElementById('imageContainer');
+
+    input.addEventListener('change', () => {
+      const files = Array.from(input.files);
+
+      // ファイル名で昇順ソート
+      files.sort((a, b) => a.name.localeCompare(b.name, 'ja'));
+
+      // 既存の画像をクリア
+      container.innerHTML = '';
+
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          img.alt = file.name;
+          container.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
+
+</body>
+</html>
